@@ -1,1 +1,4 @@
-# maxcd-paper.github.io
+# MaxCD
+
+Temporary deployment test for the MaxCD project page.
+
