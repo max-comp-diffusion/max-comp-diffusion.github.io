@@ -1,30 +1,578 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="robots" content="noindex,nofollow">
+  <meta name="description" content="Project page for Compositional Diffusion with Maximal-Noise Transitions for Long-Horizon Planning (MaxCD).">
+  <meta name="keywords" content="Diffusion Models, Compositional Planning, Long-Horizon Planning, Trajectory Stitching, Training-Free">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
   <meta name="referrer" content="no-referrer">
-  <meta name="theme-color" content="#f8faf9">
-  <title>MaxCD — Deployment test</title>
+  <title>Compositional Diffusion with Maximal-Noise Transitions for Long-Horizon Planning</title>
+  <link rel="icon" type="image/svg+xml" href="./static/images/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="./static/images/favicon-32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="./static/images/apple-touch-icon.png">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="stylesheet" href="bootstrap-grid.css">
+
   <style>
-    :root { color-scheme: light; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
-    body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: #f8faf9; color: #20313c; }
-    main { box-sizing: border-box; width: min(100% - 40px, 660px); padding: 44px; background: white; border: 1px solid #dbe4e5; border-radius: 16px; }
-    .label { margin: 0 0 16px; color: #376a61; font-size: 15px; font-weight: 650; letter-spacing: .05em; }
-    h1 { margin: 0 0 20px; font-size: clamp(32px, 7vw, 46px); font-weight: 650; line-height: 1.15; }
-    p { margin: 12px 0 0; font-size: 18px; line-height: 1.6; }
-    .note { color: #63727a; font-size: 16px; }
-    @media (max-width: 480px) { main { padding: 28px; } }
+    :root { --accent: #1d4f9c; --accent-soft: #eaf1fb; --accent-dark: #163c78; --base: #b4483f; --ink: #222; --muted: #5b6660; --line: #d9e2de; }
+    body { font-family: "Noto Sans", "Helvetica Neue", Helvetica, Arial, sans-serif; color: var(--ink); }
+    .publication-title { color: #1f2a28; }
+    .maxcd_brand { color: var(--accent); font-weight: 700; }
+    .cd_brand { color: var(--base); font-weight: 700; }
+    .hero.maxcd_hero { background: linear-gradient(180deg, #eef3f9 0%, #ffffff 100%); border-bottom: 1px solid var(--line); }
+    .maxcd_summary { max-width: 900px; margin: 14px auto 0 auto; font-size: 20px; line-height: 1.55; color: #33403c; }
+    .maxcd_teaser { margin-top: 10px; }
+    .maxcd_teaser video { width: 100%; max-width: 980px; border-radius: 8px; background: #fff; border: 1px solid var(--line); }
+    .maxcd_teaser .caption { font-size: 17px; color: #444; margin-top: 8px; }
+    .title.is-4, .title.is-3 { color: #1f2a28; }
+    .maxcd_lead { font-size: 18px; color: #444; }
+    .maxcd_caption { font-size: 17px; color: #444; margin-top: 8px; text-align: center; }
+    .maxcd_note { font-size: 16px; color: var(--muted); margin-top: 12px; }
+    .seg { display: inline-flex; gap: 4px; padding: 4px; border: 1px solid var(--line); border-radius: 8px; background: #fff; flex-wrap: wrap; }
+    .seg button { font-size: 15px; min-height: 40px; padding: 6px 16px; color: var(--muted); border: 0; border-radius: 5px; background: transparent; cursor: pointer; white-space: nowrap; transition: background .15s, color .15s; }
+    .seg button.active { background: var(--accent); color: #fff; }
+    .seg button:not(.active):hover { background: var(--accent-soft); color: var(--ink); }
+    .seg_row { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; margin: 12px 0 18px 0; }
+    .seg_row .seg_label { font-size: 15px; color: var(--muted); }
+    /* Two selector rows sharing one label column: the button groups start at the same x. */
+    .seg_grid_wrap { display: flex; justify-content: center; margin: 12px 0 18px 0; }
+    .seg_grid { display: inline-grid; grid-template-columns: auto minmax(0, 1fr); column-gap: 14px; row-gap: 10px; align-items: center; max-width: 100%; }
+    .seg_grid .seg_label { font-size: 15px; color: var(--muted); justify-self: end; text-align: right; }
+    .seg_grid .seg { justify-self: start; }
+    @media (max-width: 520px) {
+      .seg_grid { grid-template-columns: minmax(0, 1fr); row-gap: 6px; }
+      .seg_grid .seg_label { justify-self: start; text-align: left; margin-top: 6px; }
+    }
+    .video_grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; }
+    .video_grid figure { min-width: 0; text-align: center; }
+    .video_grid video { width: 100%; border-radius: 6px; background: #000; display: block; }
+    .video_grid figcaption { font-size: 15px; color: var(--muted); margin-top: 6px; }
+    .video_grid figcaption .fail { color: var(--base); }
+    @media (max-width: 900px) { .video_grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 600px) { .video_grid { grid-template-columns: repeat(2, 1fr); } .publication-title { font-size: 28px !important; } }
+    .maxcd_eq { text-align: center; margin: 14px 0 8px 0; overflow-x: auto; padding-bottom: 6px; }
+    .maxcd_eq img { display: block; margin: 0 auto; max-width: none; }
+    .equation_hint { display: none; font-size: 14px; color: var(--muted); text-align: center; }
+    @media (max-width: 600px) { .equation_hint { display: block; } }
+    .pano_row { margin-bottom: 14px; }
+    .pano_row .pano_label { font-weight: 600; font-size: 16px; margin-bottom: 4px; color: #333; text-align: left; }
+    .pano_label .sub { font-weight: 500; color: var(--muted); }
+    .pano_row img { width: 100%; border-radius: 4px; border: 1px solid #ddd; background: #000; display: block; }
+    .pano_prompt { font-size: 17px; color: #444; margin: 6px 0 14px 0; font-style: italic; text-align: center; }
+    .pano_video_pair video { width: 100%; border-radius: 4px; background: #000; }
+    select.maxcd_select { appearance: none; border: 1px solid #b3c0d6; border-radius: 6px; font-size: 16px; min-height: 42px; padding: 6px 36px 6px 12px; color: var(--ink); background: linear-gradient(45deg, transparent 50%, var(--muted) 50%) calc(100% - 16px) 50% / 5px 5px no-repeat, linear-gradient(135deg, var(--muted) 50%, transparent 50%) calc(100% - 11px) 50% / 5px 5px no-repeat, #fff; max-width: min(70vw, 620px); text-overflow: ellipsis; cursor: pointer; }
+    hr { margin: 1.2rem 0; background-color: var(--line); }
+    .footer { background: #f6f8fb; }
   </style>
 </head>
+
 <body>
-  <main>
-    <p class="label">MaxCD</p>
-    <h1>Deployment test</h1>
-    <p>This page confirms that GitHub Pages is serving this repository.</p>
-    <p class="note">The project demo is being prepared.</p>
-  </main>
+
+<section class="hero maxcd_hero">
+  <div class="hero-body hero-body-dec19">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title publication-title" style="font-size: 40px;">
+            Compositional Diffusion with<br> Maximal-Noise Transitions for Long-Horizon Planning
+          </h1>
+          <div class="is-size-5 publication-authors" style="margin-top: 6pt; color: var(--muted);">
+            Under Review
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section class="section" style="padding-top: 1rem; padding-bottom: 1rem;">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered">
+      <div class="column is-four-fifths">
+        <div style="border-left: 4px solid var(--accent); background: var(--accent-soft); padding: 16px 22px; border-radius: 4px;">
+          <p style="margin: 0; font-size: 22px; line-height: 1.5; color: #222;">
+            <span style="font-weight: 700; letter-spacing: 0.04em; color: var(--accent);">TL;DR:&nbsp;</span>
+            Compositional diffusion can average incompatible local modes into an infeasible plan.
+            <b class="maxcd_brand">MaxCD</b> changes the sampling transition on overlaps to reduce persistent mode-averaging,
+            without retraining or additional denoiser evaluations.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== Figure 1: planning success and runtime ============================== -->
+<section class="section" style="padding-top: 0.5rem;">
+  <div class="container is-max-desktop">
+    <div class="columns is-vcentered is-centered">
+      <div class="column is-5 has-text-centered">
+        <img src="materials/0-method/fig_intro_planning_tradeoff.png" alt="Success rate versus planning time for CompDiffuser, ECD, CDGS and MaxCD" style="width: 100%; max-width: 440px;">
+      </div>
+      <div class="column is-6">
+        <p class="has-text-justified maxcd_lead">
+          <b>Planning success and runtime.</b> Success rates and per-plan runtimes averaged over PointMaze-Giant-Stitch and
+          AntMaze-Giant-Stitch. Circle area is proportional to runtime. CDGS adds denoiser evaluations for resampling and candidate
+          ranking, while ECD adds corrections to the composed plan. On these two mazes, <b class="maxcd_brand">MaxCD</b>
+          achieves the highest success rate among the compared methods with 7&ndash;10% more planning time than
+          <b class="cd_brand">CompDiffuser</b> and no additional denoiser evaluations.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+<!-- ============================== Motivation ============================== -->
+<section class="section" id="motivation">
+  <div class="container is-max-desktop">
+    <div class="column is-full-width">
+      <h2 class="title is-4">Mode-Averaging Problem in Compositional Diffusion</h2>
+      <p class="has-text-justified maxcd_lead">
+        When local plan distributions are multimodal, neighbouring local plans may be denoised towards incompatible modes.
+        A local plan conditioned on these neighbours through its overlaps can then have a denoised estimate between the modes,
+        in a low-density region. The composed plan can therefore be infeasible even when each mode represents feasible local behaviour.
+        In the circular-arc example, the local diffusion model is trained on short segments along the circle, and three
+        overlapping local plans are composed to connect the start
+        <img src="materials/0-method/mark_start_crop.png" alt="start" style="height: 1em; vertical-align: -0.18em;">
+        and goal
+        <img src="materials/0-method/mark_goal_crop.png" alt="goal" style="height: 1em; vertical-align: -0.18em;">.
+        A trajectory is <b style="color:#2ca25f">valid</b> when all its states and segment midpoints lie within the shaded ring,
+        so feasible plans follow either the upper or the lower half of the circle. <b style="color:#d24d4d">Invalid</b> plans are drawn in red.
+        <b class="cd_brand">CompDiffuser</b> often generates trajectories through the interior of the circle, where they depart from the
+        regions supported by the training data, and increasing the number of denoising steps does not reliably resolve this.
+        Using the same trained model and composition rule, <b class="maxcd_brand">MaxCD</b> produces more valid plans along the circle.
+      </p>
+      <div class="has-text-centered maxcd_teaser" style="margin-top: 10px;">
+        <video id="toy_anim_video" playsinline autoplay muted loop>
+          <source src="assets/videos/toy-denoising.mp4" type="video/mp4">
+        </video>
+        <p class="caption">
+          <b>Recorded denoising of 100 composed plans (400 steps, same initial noise).</b>
+          Each frame shows the actual noisy plans at that step; the counts are the plans currently inside the ring.
+          Left: <b class="cd_brand">CompDiffuser</b>. Right: <b class="maxcd_brand">MaxCD</b>.
+        </p>
+      </div>
+
+      <div class="columns is-vcentered is-centered" style="margin-top: 6px;">
+        <div class="column is-one-third has-text-centered">
+          <img src="materials/0-method/fig_toy_a_training_clips.png" alt="Training trajectory segments on a circle, with three positions per segment" style="width: 100%; max-width: 300px;">
+          <p class="maxcd_caption"><b>Training segments.</b> Short segments, each represented by three positions along a 60° arc.</p>
+        </div>
+        <div class="column is-two-fifths has-text-centered">
+          <img src="materials/0-method/fig_toy_d_valid_rate.png" alt="Valid rate across denoising step counts for MaxCD and CompDiffuser" style="width: 100%; max-width: 420px;">
+          <p class="maxcd_caption"><b>Valid rate vs. denoising steps.</b> With more denoising steps, the valid rate improves substantially for <b class="maxcd_brand">MaxCD</b> but remains low for <b class="cd_brand">CompDiffuser</b>.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<hr>
+
+<!-- ============================== Key idea ============================== -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-4">Persistence of Mode-Averaging Under the Sampling Transition</h2>
+        <div class="content has-text-justified div_abs_text">
+          <p>
+            Let <i>y<sub>j</sub><sup>(t)</sup></i> denote local plan <i>j</i> at denoising step <i>t</i>.
+            The sampling transition combines the
+            <b>denoised estimate</b>, the <b>noise direction predicted from the current state</b>, and <b>fresh Gaussian noise</b>:
+          </p>
+          <p class="maxcd_eq" tabindex="0" aria-label="Sampling transition equation"><img src="materials/0-method/eq_ddim.svg" alt="y_j at t-1 equals sqrt(alpha at t-1) times the denoised estimate y-hat_j,0 at t, plus sqrt(1 minus alpha at t-1 minus sigma_t squared) times epsilon_theta(y_j at t, t), plus sigma_t times z" style="height: 78px;"></p>
+          <p class="equation_hint">Scroll equations horizontally to read all terms.</p>
+          <p>
+            The predicted noise direction is computed from the current noisy state and reused to construct the next state.
+            Substituting the definition of the denoised estimate makes this dependence explicit:
+          </p>
+          <p class="maxcd_eq" tabindex="0" aria-label="Retained state component equation"><img src="materials/0-method/eq_retained.svg" alt="y_j at t-1 equals c_t times y_j at t, plus (sqrt(alpha at t-1) minus c_t sqrt(alpha at t)) times the denoised estimate y-hat_j,0 at t, plus sigma_t times z" style="height: 88px;"></p>
+          <p>
+            where
+            <img src="materials/0-method/eq_ct.svg" alt="c_t = sqrt((1 - alpha_{t-1} - sigma_t^2) / (1 - alpha_t))" style="height: 2.1em; vertical-align: -0.75em;">.
+            For a fixed denoised estimate, the retained state component <i>c<sub>t</sub>y<sub>j</sub><sup>(t)</sup></i>
+            carries part of the current noisy state into the next state, even when fresh Gaussian noise is added.
+            Increasing the noise standard deviation &sigma;<sub><i>t</i></sub> reduces <i>c<sub>t</sub></i>.
+            At the maximal admissible value,
+            <img src="materials/0-method/eq_sigma.svg" alt="sigma_t = sqrt(1 - alpha_{t-1})" style="height: 1.6em; vertical-align: -0.45em;">,
+            the coefficient becomes zero. The denoised estimate still depends on the current plan and its neighbours.
+            In the local model analysed in Proposition 1, the denoised estimate stays at the midpoint between two incompatible modes
+            while an overlap coordinate is in the mode-averaged region. Maximal-noise transitions minimise the probability of remaining
+            in this region throughout a fixed sequence of denoising steps. Retaining the predicted noise direction increases this
+            probability under the same model.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<hr>
+
+<!-- ============================== Method: maximal-noise transitions on overlaps ============================== -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="column is-full-width">
+      <h2 class="title is-4">Maximal-Noise Transitions on Overlaps</h2>
+      <div class="content has-text-justified div_abs_text">
+        <p>
+          Motivated by this analysis, <b class="maxcd_brand">Maximal-Noise Compositional Diffusion (MaxCD)</b> applies
+          maximal-noise transitions to the overlaps of local plans. Setting
+          <img src="materials/0-method/eq_sigma.svg" alt="sigma_t = sqrt(1 minus alpha at t-1)" style="height: 1.6em; vertical-align: -0.45em;">
+          removes the predicted noise direction and gives the full-band maximal-noise candidate:
+        </p>
+        <p class="maxcd_eq" tabindex="0" aria-label="Maximal-noise transition equation"><img src="materials/0-method/eq_maxcd.svg" alt="The candidate y-bar_j at t-1 equals sqrt(alpha at t-1) times the denoised estimate y-hat_j,0 at t, plus sqrt(1 minus alpha at t-1) times independent standard Gaussian noise z" style="height: 78px;"></p>
+        <p class="equation_hint">Scroll the equation horizontally to read all terms.</p>
+        <p>
+          Here <b>z</b> is standard Gaussian noise sampled independently at each transition.
+          Subsequent denoising conditioned on neighbouring local plans can move the overlap estimate away from a mode-averaged state
+          towards a supported mode.
+        </p>
+      </div>
+
+      <div class="columns is-vcentered" style="margin-top: 12px;">
+        <div class="column is-half">
+          <h3 class="title is-5" style="margin-bottom: 8px;">Preserving fine details</h3>
+          <p class="has-text-justified maxcd_lead">
+            The denoised estimate used in the maximal-noise transition approximates a posterior mean, in which uncertain fine
+            details can be averaged out. Repeatedly applying this transition across all frequency components can therefore
+            suppress fine details. To preserve them, a <b>spectral split</b> applies maximal-noise transitions to low-frequency
+            components, which can revise coarse trajectory geometry, and retains the original transition for high-frequency
+            components. The split is taken along the local-plan horizon in planning and along the spatial dimensions in panorama
+            generation.
+          </p>
+        </div>
+        <div class="column is-half has-text-centered">
+          <img src="materials/0-method/fig_spectral.png" alt="Panorama crops from the same prompt and seed: full-band maximal noise above, spectral split below" style="width: 100%; max-width: 520px;">
+          <p class="maxcd_caption"><b>Effect of the spectral split.</b> Same prompt and seed. <b>Top:</b> full-band maximal noise over-smooths the image. <b>Bottom:</b> the spectral split preserves fine details.</p>
+        </div>
+      </div>
+
+      <h3 class="title is-5" style="margin: 18px 0 8px 0;">Compositional update</h3>
+      <p class="has-text-justified maxcd_lead">
+        Neighbouring local plans exchange information through their overlaps. We apply the candidate with the spectral split to the
+        <b>overlap coordinates of interior local plans</b> and retain the original transition elsewhere.
+        The start- and goal-conditioned plans keep the original transition throughout.
+        The update is used only while <i>t</i>/<i>T</i> &gt; &gamma;, reserving the low-noise stages for refinement with the original transition.
+        Both candidates reuse the same denoised estimate and noise prediction, so MaxCD requires no retraining or additional denoiser
+        evaluations. The main OGBench success-rate and panorama experiments use a common noise-level threshold &gamma; = 0.2 and
+        spectral bandwidth &rho; = 0.25, without tuning these hyperparameters separately for each task.
+      </p>
+      <figure class="has-text-centered" style="margin-top: 16px;">
+        <img src="materials/0-method/process.png" alt="Sampling procedures of CompDiffuser, CDGS and MaxCD, showing the spectral split, overlap mask and noise-level threshold" style="width: 100%;">
+        <p class="caption" style="font-size: 18px; margin-top: 10px; text-align: justify;">
+          <b>Overview of <span class="maxcd_brand">MaxCD</span>, compared with CompDiffuser and CDGS.</b>
+          <b>Top:</b> CompDiffuser applies the original transition at each denoising step.
+          <b>Middle:</b> CDGS performs <i>U</i> resampling iterations before evaluating and repopulating candidate plans.
+          <b>Bottom:</b> MaxCD replaces the predicted noise direction with fresh Gaussian noise in the low-frequency components,
+          while retaining the original transition for high-frequency components. The update applies to overlap coordinates (cyan)
+          only when <i>t</i>/<i>T</i> &gt; &gamma;, with the original transition retained elsewhere and during final refinement.
+        </p>
+      </figure>
+    </div>
+  </div>
+</section>
+
+
+<hr>
+
+<!-- ============================== Plan feasibility ============================== -->
+<section class="section" id="plan_feasibility">
+  <div class="container is-max-desktop">
+    <div class="column is-full-width">
+      <h2 class="title is-4">Plan Feasibility Analysis</h2>
+      <p class="has-text-justified maxcd_lead">
+        We sample 20 plans for each of the five test-time tasks in AntMaze-Giant-Stitch and measure the <b>valid plan rate</b>,
+        the fraction of plans that do not pass through maze walls, for <b class="cd_brand">CompDiffuser</b> (CD), ECD, CDGS and
+        <b class="maxcd_brand">MaxCD</b> with the same pretrained local model and start and goal conditions.
+        CompDiffuser produces many infeasible plans that pass through walls, while MaxCD generates more valid plans that follow the
+        corridors. In the paper's AntMaze comparison, MaxCD raises the mean valid plan rate from 36% to 86% across the five tasks.
+        The appendix provides the same comparison on PointMaze-Giant-Stitch; MaxCD uses the bandwidth &rho; = 0.1 in this
+        analysis, as stated in the paper.
+      </p>
+      <div class="seg_row" style="justify-content: center; margin: 14px 0 10px 0;">
+        <span class="seg_label">Maze</span>
+        <div class="seg" id="planq_seg" role="group" aria-label="Maze">
+          <button type="button" data-fig="fig_plan_quality_pointmaze_all_tasks" class="active">PointMaze-Giant-Stitch</button>
+          <button type="button" data-fig="fig_plan_quality_all_tasks">AntMaze-Giant-Stitch</button>
+        </div>
+      </div>
+      <div class="has-text-centered">
+        <img id="planq_img" src="materials/0-method/fig_plan_quality_pointmaze_all_tasks.png" alt="Plan feasibility comparison, five tasks by four methods" style="width: 100%;">
+      </div>
+      <p class="maxcd_caption" style="margin: 8px auto 0;">
+        <b>Plan feasibility on the maze selected above.</b> Rows are Tasks 1&ndash;5 and columns are CD, ECD, CDGS and
+        <b class="maxcd_brand">MaxCD</b>. Each panel shows 20 plans from the start
+        <img src="materials/0-method/mark_start_crop.png" alt="start" style="height: 1em; vertical-align: -0.18em;">
+        to the goal
+        <img src="materials/0-method/mark_goal_crop.png" alt="goal" style="height: 1em; vertical-align: -0.18em;">;
+        plans crossing walls are <b style="color:#d24d4d">red</b>, valid plans are <b style="color:#2ca25f">green</b>,
+        and the percentages are the valid plan rates.
+      </p>
+    </div>
+  </div>
+</section>
+
+
+<hr>
+
+<!-- ============================== Environment rollouts ============================== -->
+<section class="section" id="rollouts">
+  <div class="container is-max-desktop">
+    <div class="column is-full-width">
+      <h2 class="title is-3 has-text-centered">Qualitative Results in OGBench</h2>
+      <p class="has-text-justified maxcd_lead">
+        These videos show <b class="maxcd_brand">MaxCD</b> plans executed in the five evaluation tasks of each environment.
+        PointMaze, AntMaze and HumanoidMaze use plans in the 2D <i>x</i>&ndash;<i>y</i> position space, executed with a PD controller
+        for PointMaze and learned inverse dynamics models for AntMaze and HumanoidMaze.
+        AntSoccer uses a 17D planner that includes the ant and ball positions and the joint positions of the ant, together with an
+        inverse dynamics model. Cube uses full-state plans executed by goal-conditioned Diffusion Q-Learning policies.
+        Blue, pink and yellow markers indicate the start, goal and current planned subgoal. In Cube, translucent cubes show the
+        goal configuration and dotted traces show the executed cube positions.
+        Failed episodes are labelled when the recorded rollout set contains no successful episode for that task.
+      </p>
+
+      <div class="seg_grid_wrap">
+        <div class="seg_grid">
+          <span class="seg_label">Environment</span>
+          <div class="seg" id="env_family_seg" role="group" aria-label="Environment">
+            <button type="button" data-family="pointmaze">PointMaze</button>
+            <button type="button" data-family="antmaze" class="active">AntMaze</button>
+            <button type="button" data-family="humanoidmaze">HumanoidMaze</button>
+            <button type="button" data-family="antsoccer">AntSoccer</button>
+            <button type="button" data-family="cube">Cube</button>
+          </div>
+          <span class="seg_label" id="env_variant_label">Maze</span>
+          <div class="seg" id="env_variant_seg" role="group" aria-label="Variant"></div>
+        </div>
+      </div>
+
+      <div class="video_grid" id="env_video_grid">
+        <figure><video id="env-task1" playsinline autoplay muted loop><source type="video/mp4"></video><figcaption id="env-task1-caption">Task 1</figcaption></figure>
+        <figure><video id="env-task2" playsinline autoplay muted loop><source type="video/mp4"></video><figcaption id="env-task2-caption">Task 2</figcaption></figure>
+        <figure><video id="env-task3" playsinline autoplay muted loop><source type="video/mp4"></video><figcaption id="env-task3-caption">Task 3</figcaption></figure>
+        <figure><video id="env-task4" playsinline autoplay muted loop><source type="video/mp4"></video><figcaption id="env-task4-caption">Task 4</figcaption></figure>
+        <figure><video id="env-task5" playsinline autoplay muted loop><source type="video/mp4"></video><figcaption id="env-task5-caption">Task 5</figcaption></figure>
+      </div>
+      <p class="maxcd_note has-text-centered" id="env_note"></p>
+    </div>
+  </div>
+</section>
+
+
+<hr>
+
+
+<!-- ============================== Panorama ============================== -->
+<section class="section" id="panorama">
+  <div class="container is-max-desktop">
+    <div class="column is-full-width">
+      <h2 class="title is-3 has-text-centered">Panoramic Image Generation</h2>
+      <p class="has-text-justified maxcd_lead">
+        The same transition applies to image composition. We generate 512 &times; 4608 panoramas by composing 17
+        overlapping 512 &times; 512 windows of Stable Diffusion 2.0 with 50% overlap. <b class="maxcd_brand">MaxCD</b> is
+        applied to GSC using the spatial-frequency spectral split on the shared panorama latent.
+        In the paper's evaluation, MaxCD improves visual consistency and prompt alignment over GSC with nearly the same generation time.
+        Select a prompt to view an example generated by MaxCD.
+      </p>
+
+      <div class="seg_row" style="justify-content: center;">
+        <span class="seg_label">Prompt</span>
+        <select id="pano_select" class="maxcd_select" onchange="panoUpdate()"></select>
+      </div>
+      <div id="pano_rows">
+        <div class="pano_row"><p class="pano_label"><span class="maxcd_brand">MaxCD</span></p><img id="pano-maxcd" alt="MaxCD panorama"></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section class="section" id="panorama_denoising" style="padding-top: 0;">
+  <div class="container is-max-desktop">
+    <div class="column is-full-width">
+      <h3 class="title is-4">Denoising Process</h3>
+      <p class="has-text-justified maxcd_lead">
+        GSC and <b class="maxcd_brand">MaxCD</b> generate the selected prompt from the same initial noise over 50 denoising steps.
+        Each frame shows the decoded noisy panorama latent at that step.
+      </p>
+      <div class="seg_row" style="justify-content: center; margin: 12px 0 10px 0;">
+        <span class="seg_label">Prompt</span>
+        <div class="seg" id="denoise_seg" role="group" aria-label="Prompt">
+          <button type="button" data-key="landscape" class="active">Landscape</button>
+          <button type="button" data-key="corgis">Corgis</button>
+        </div>
+      </div>
+      <div class="pano_video_pair">
+        <p class="pano_label" style="font-weight:600; font-size:16px; color:#333;">GSC <span class="sub">(original transition)</span></p>
+        <video id="denoise-gsc" playsinline autoplay muted loop><source id="denoise-gsc-src" src="assets/videos/landscape-gsc-denoising-fff26010fe.mp4" type="video/mp4"></video>
+        <p class="pano_label" style="font-weight:600; font-size:16px; color:#333; margin-top: 10px;"><span class="maxcd_brand">MaxCD</span> <span class="sub">(with the spectral split)</span></p>
+        <video id="denoise-maxcd" playsinline autoplay muted loop><source id="denoise-maxcd-src" src="assets/videos/landscape-maxcd-denoising-a4f45ce251.mp4" type="video/mp4"></video>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<hr>
+
+
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3">Conclusion</h2>
+        <div class="content has-text-justified div_abs_text">
+          <p>
+            <b class="maxcd_brand">MaxCD</b> addresses persistent mode-averaging by changing the sampling transition on overlaps.
+            The spectral split preserves the original transition on high-frequency components, with no retraining or additional
+            denoiser evaluations. Experiments show improved plan feasibility and higher success rates on challenging locomotion
+            and object manipulation tasks, with substantial gains on the Giant mazes. The same transition improves visual
+            consistency and prompt alignment in panorama generation with nearly the same generation time as the base sampler.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<footer class="footer">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-8 has-text-centered">
+        <div class="content">
+          <p>
+            This website template is adapted from
+            <a href="https://nerfies.github.io/">Nerfies</a>
+            (<a href="https://github.com/nerfies/nerfies.github.io">source</a>).
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+<script>
+// Environment families, their variants and the materials directories.
+const ENV = {
+  pointmaze: { label: "Maze", variants: [["medium", "Medium Stitch"], ["large", "Large Stitch"], ["giant", "Giant Stitch"]], dir: (v) => "pointmaze_" + v, note: "2D position planner with a PD controller." },
+  antmaze: { label: "Maze", variants: [["medium", "Medium Stitch"], ["large", "Large Stitch"], ["giant", "Giant Stitch"]], dir: (v) => "antmaze_" + v, note: "2D position planner with a learned inverse dynamics model." },
+  humanoidmaze: { label: "Maze", variants: [["medium", "Medium Stitch"], ["large", "Large Stitch"], ["giant", "Giant Stitch"]], dir: (v) => "humanoidmaze_" + v, note: "2D position planner with a learned inverse dynamics model. Videos play at twelve times the environment speed." },
+  antsoccer: { label: "Arena", variants: [["arena", "Arena Stitch"], ["medium", "Medium Stitch"]], dir: (v) => "antsoccer_" + v, note: "The ant reaches the ball and then dribbles it to the goal. A 17D planner represents the ant and ball positions and the joint positions of the ant." },
+  cube: { label: "Cubes", variants: [["single", "Single"], ["double", "Double"], ["triple", "Triple"], ["quadruple", "Quadruple"]], dir: (v) => "cube_" + v, note: "Pick-and-place with one to four cubes, using goal-conditioned Diffusion Q-Learning policies. Videos play at twice the environment speed." },
+};
+const DEFAULT_VARIANT = { pointmaze: "giant", antmaze: "giant", humanoidmaze: "giant", antsoccer: "arena", cube: "double" };
+const FAILED = { antsoccer_medium: [2, 3], cube_quadruple: [4] };
+const CACHE_BUST = String(Date.now());
+let currentFamily = "antmaze", currentVariant = DEFAULT_VARIANT.antmaze;
+
+function renderVariantSeg() {
+  const env = ENV[currentFamily];
+  document.getElementById("env_variant_label").textContent = env.label;
+  const seg = document.getElementById("env_variant_seg");
+  seg.innerHTML = "";
+  env.variants.forEach(([v, label]) => {
+    const b = document.createElement("button"); b.type = "button"; b.textContent = label; b.dataset.variant = v;
+    if (v === currentVariant) b.classList.add("active");
+    b.addEventListener("click", () => { currentVariant = v; renderVariantSeg(); loadVideos(); });
+    seg.appendChild(b);
+  });
+}
+function loadVideos() {
+  const env = ENV[currentFamily]; const dir = env.dir(currentVariant);
+  for (let i = 1; i <= 5; i++) {
+    const v = document.getElementById("env-task" + i);
+    v.querySelector("source").src = "materials/" + dir + "/task" + i + ".mp4?v=" + CACHE_BUST;
+    v.load(); v.play().catch(() => {});
+    const failed = (FAILED[dir] || []).includes(i);
+    document.getElementById("env-task" + i + "-caption").innerHTML = failed ? `Task ${i} <span class="fail">(failed episode)</span>` : `Task ${i}`;
+  }
+  const failures = FAILED[dir] || [];
+  let failureNote = "";
+  if (failures.length) {
+    const taskLabel = failures.length === 1 ? "Task " : "Tasks ";
+    failureNote = " " + taskLabel + failures.join(" and ") + ": no successful episode was available in the recorded set, so a failed episode is shown.";
+    if (dir === "antsoccer_medium") failureNote += " These failure clips end at 1500 environment steps.";
+  }
+  document.getElementById("env_note").textContent = env.note + failureNote;
+}
+document.querySelectorAll("#env_family_seg button").forEach((b) => {
+  b.addEventListener("click", () => {
+    document.querySelectorAll("#env_family_seg button").forEach((x) => x.classList.remove("active"));
+    b.classList.add("active"); currentFamily = b.dataset.family; currentVariant = DEFAULT_VARIANT[currentFamily];
+    renderVariantSeg(); loadVideos();
+  });
+});
+
+// Fallback prompts used when index.json is unavailable.
+const PANO_PROMPTS = [
+  ["landscape", "A beautiful landscape with mountains and a river"],
+  ["castle", "A cinematic view of a castle in the sunset"],
+  ["misty-fog", "A photo of a forest with a misty fog"],
+  ["anime", "Natural landscape in anime style illustration"],
+  ["corgis", "last supper with cute corgis"],
+];
+function panoFill(rows) {
+  const sel = document.getElementById("pano_select");
+  sel.innerHTML = "";
+  rows.forEach(([key, prompt]) => {
+    const opt = document.createElement("option");
+    opt.value = key; opt.textContent = prompt; opt.dataset.prompt = prompt;
+    sel.appendChild(opt);
+  });
+  sel.value = "landscape";
+  panoUpdate();
+}
+function panoInit() {
+  fetch("materials/panorama/index.json").then((r) => r.json())
+    .then((rows) => panoFill(rows.map((r) => [r.key, r.prompt])))
+    .catch(() => panoFill(PANO_PROMPTS));
+}
+function panoUpdate() {
+  const sel = document.getElementById("pano_select");
+  const key = sel.value;
+  document.getElementById("pano-maxcd").src = "materials/panorama/" + key + "/maxcd.webp";
+  document.getElementById("pano-maxcd").alt = "MaxCD panorama: " + sel.selectedOptions[0].textContent;
+}
+
+document.querySelectorAll("#planq_seg button").forEach((b) => {
+  b.addEventListener("click", () => {
+    document.querySelectorAll("#planq_seg button").forEach((x) => x.classList.remove("active"));
+    b.classList.add("active");
+    document.getElementById("planq_img").src = "materials/0-method/" + b.dataset.fig + ".png";
+  });
+});
+
+const DENOISE_CLIPS = {
+  landscape: { gsc: "assets/videos/landscape-gsc-denoising-fff26010fe.mp4", maxcd: "assets/videos/landscape-maxcd-denoising-a4f45ce251.mp4" },
+  corgis: { gsc: "assets/videos/corgis-gsc-denoising-baf46cd55c.mp4", maxcd: "assets/videos/corgis-maxcd-denoising-fb22590d1b.mp4" },
+};
+document.querySelectorAll("#denoise_seg button").forEach((b) => {
+  b.addEventListener("click", () => {
+    document.querySelectorAll("#denoise_seg button").forEach((x) => x.classList.remove("active"));
+    b.classList.add("active");
+    ["gsc", "maxcd"].forEach((m) => {
+      const v = document.getElementById("denoise-" + m);
+      document.getElementById("denoise-" + m + "-src").src = DENOISE_CLIPS[b.dataset.key][m];
+      v.load(); v.play().catch(() => {});
+    });
+  });
+});
+
+window.addEventListener("DOMContentLoaded", () => { renderVariantSeg(); loadVideos(); panoInit(); });
+</script>
+
 </body>
 </html>
-

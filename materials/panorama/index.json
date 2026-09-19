@@ -1,0 +1,100 @@
+[
+ {
+  "key": "landscape",
+  "prompt": "A beautiful landscape with mountains and a river",
+  "seed": 3,
+  "method": "maxcd",
+  "selection": "best rank-sum of Intra-LPIPS, Intra-Style-L and CLIP-S among seeds 0-9"
+ },
+ {
+  "key": "dolomites",
+  "prompt": "A photo of the dolomites with red lava flowing through the valley",
+  "seed": 4,
+  "method": "maxcd",
+  "selection": "best rank-sum of Intra-LPIPS, Intra-Style-L and CLIP-S among seeds 0-9"
+ },
+ {
+  "key": "babbling-brook",
+  "prompt": "A photo of lush forest with a babbling brook",
+  "seed": 7,
+  "method": "maxcd",
+  "selection": "best rank-sum of Intra-LPIPS, Intra-Style-L and CLIP-S among seeds 0-9"
+ },
+ {
+  "key": "misty-fog",
+  "prompt": "A photo of a forest with a misty fog",
+  "seed": 1,
+  "method": "maxcd",
+  "selection": "best rank-sum of Intra-LPIPS, Intra-Style-L and CLIP-S among seeds 0-9"
+ },
+ {
+  "key": "cartoon",
+  "prompt": "Cartoon panorama of spring summer beautiful nature",
+  "seed": 0,
+  "method": "maxcd",
+  "selection": "best rank-sum of Intra-LPIPS, Intra-Style-L and CLIP-S among seeds 0-9"
+ },
+ {
+  "key": "skiers",
+  "prompt": "A photo of a snowy mountain peak with skiers",
+  "seed": 5,
+  "method": "maxcd",
+  "selection": "best rank-sum of Intra-LPIPS, Intra-Style-L and CLIP-S among seeds 0-9"
+ },
+ {
+  "key": "anime",
+  "prompt": "Natural landscape in anime style illustration",
+  "seed": 8,
+  "method": "maxcd",
+  "selection": "best rank-sum of Intra-LPIPS, Intra-Style-L and CLIP-S among seeds 0-9"
+ },
+ {
+  "key": "futuristic",
+  "prompt": "Skyline of a futuristic city with flying cars",
+  "seed": 3,
+  "method": "maxcd",
+  "selection": "best rank-sum of Intra-LPIPS, Intra-Style-L and CLIP-S among seeds 0-9"
+ },
+ {
+  "key": "silhouette",
+  "prompt": "Silhouette wallpaper of a dreamy scene with shooting stars",
+  "seed": 4,
+  "method": "maxcd",
+  "selection": "best rank-sum of Intra-LPIPS, Intra-Style-L and CLIP-S among seeds 0-9"
+ },
+ {
+  "key": "palm-trees",
+  "prompt": "A beach with palm trees",
+  "seed": 5,
+  "method": "maxcd",
+  "selection": "best rank-sum of Intra-LPIPS, Intra-Style-L and CLIP-S among seeds 0-9"
+ },
+ {
+  "key": "grassland",
+  "prompt": "A photo of a grassland with animals",
+  "seed": 4,
+  "method": "maxcd",
+  "selection": "best rank-sum of Intra-LPIPS, Intra-Style-L and CLIP-S among seeds 0-9"
+ },
+ {
+  "key": "castle",
+  "prompt": "A cinematic view of a castle in the sunset",
+  "seed": 3,
+  "method": "maxcd",
+  "selection": "best rank-sum of Intra-LPIPS, Intra-Style-L and CLIP-S among seeds 0-9"
+ },
+ {
+  "key": "coral-reef",
+  "prompt": "A photo of a beautiful ocean with coral reef",
+  "seed": 3,
+  "method": "maxcd",
+  "selection": "visual check: seed 3 avoids the tonal discontinuity of the metric-best seed 0"
+ },
+ {
+  "key": "corgis",
+  "prompt": "last supper with cute corgis",
+  "seed": 0,
+  "method": "maxcd",
+  "selection": "best rank-sum of Intra-LPIPS, Intra-Style-L and CLIP-S among seeds 0-9"
+ }
+]
