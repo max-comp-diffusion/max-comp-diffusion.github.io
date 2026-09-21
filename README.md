@@ -18,8 +18,8 @@ Layout:
   (pointmaze / antmaze / humanoidmaze medium, large, giant; antsoccer arena, medium; cube single .. quadruple).
 - `materials/panorama/<prompt>/maxcd.webp` — 14 prompts, one MaxCD example each. `index.json` records each prompt and the displayed seed.
 - `assets/videos/` — recorded toy denoising (CompDiffuser vs MaxCD) and landscape/corgi denoising recordings (GSC, MaxCD).
-  The AntMaze-Giant-Stitch Task 4 example shows recorded CompDiffuser and MaxCD plans from denoising steps 10–50,
-  with desktop and mobile video layouts and a downloadable GIF.
+  The AntMaze-Giant-Stitch Task 4 example shows recorded CompDiffuser and MaxCD plans from denoising steps 0–50,
+  with desktop and mobile video layouts.
 - `static/` — Bulma, the Nerfies stylesheet (`index.css`) and the favicon; unused bundled files were removed.
 
 Template attribution and licences: `NOTICE.md`.

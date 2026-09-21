@@ -65,7 +65,6 @@
     .pano_video_pair video { width: 100%; border-radius: 4px; background: #000; }
     .plan_denoising { margin: 24px 0 30px; }
     .plan_denoising video { display: block; width: 100%; aspect-ratio: 1440 / 580; background: #fff; border-radius: 6px; }
-    .plan_denoising a { color: var(--accent); text-decoration: underline; }
     @media (max-width: 600px) { .plan_denoising video { aspect-ratio: 720 / 1168; } }
     select.maxcd_select { appearance: none; border: 1px solid #b3c0d6; border-radius: 6px; font-size: 16px; min-height: 42px; padding: 6px 36px 6px 12px; color: var(--ink); background: linear-gradient(45deg, transparent 50%, var(--muted) 50%) calc(100% - 16px) 50% / 5px 5px no-repeat, linear-gradient(135deg, var(--muted) 50%, transparent 50%) calc(100% - 11px) 50% / 5px 5px no-repeat, #fff; max-width: min(70vw, 620px); text-overflow: ellipsis; cursor: pointer; }
     hr { margin: 1.2rem 0; background-color: var(--line); }
@@ -305,14 +304,13 @@
       </p>
       <figure class="plan_denoising" id="plan_denoising_example">
         <video id="plan-denoising" playsinline autoplay muted loop controls preload="metadata"
-               poster="assets/videos/antmaze-denoising-wide-poster.png"
+               poster="assets/videos/antmaze-denoising-wide-poster.png?v=20260921-step0"
                aria-label="Recorded denoising of CompDiffuser and MaxCD plans on AntMaze-Giant-Stitch Task 4">
-          <source id="plan-denoising-src" src="assets/videos/antmaze-denoising-wide.mp4" type="video/mp4">
+          <source id="plan-denoising-src" src="assets/videos/antmaze-denoising-wide.mp4?v=20260921-step0" type="video/mp4">
         </video>
         <figcaption class="maxcd_caption">
-          <b>Denoising on AntMaze-Giant-Stitch, Task 4.</b> Recorded noisy plans at steps 10&ndash;50 for the same start and goal.
+          <b>Denoising on AntMaze-Giant-Stitch, Task 4.</b> Recorded noisy plans at steps 0&ndash;50 for the same start and goal.
           Plans passing through walls are red, and wall-valid plans are green.
-          <a href="assets/videos/antmaze-denoising.gif" download>Download GIF</a>
         </figcaption>
       </figure>
       <div class="seg_row" style="justify-content: center; margin: 14px 0 10px 0;">
@@ -595,8 +593,8 @@ function loadPlanDenoising() {
   const position = video.currentTime || 0;
   const shouldPlay = !video.dataset.layout || !video.paused;
   video.dataset.layout = layout;
-  video.poster = "assets/videos/antmaze-denoising-" + layout + "-poster.png";
-  document.getElementById("plan-denoising-src").src = "assets/videos/antmaze-denoising-" + layout + ".mp4";
+  video.poster = "assets/videos/antmaze-denoising-" + layout + "-poster.png?v=20260921-step0";
+  document.getElementById("plan-denoising-src").src = "assets/videos/antmaze-denoising-" + layout + ".mp4?v=20260921-step0";
   video.addEventListener("loadedmetadata", () => {
     video.currentTime = Math.min(position, Math.max(0, video.duration - .1));
     if (shouldPlay && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) video.play().catch(() => {});
