@@ -29,7 +29,8 @@
     .maxcd_teaser .caption { font-size: 17px; color: #444; margin-top: 8px; }
     .title.is-4, .title.is-3 { color: #1f2a28; }
     .maxcd_lead { font-size: 18px; color: #444; }
-    .maxcd_caption { font-size: 17px; color: #444; margin-top: 8px; text-align: center; }
+    .maxcd_caption { font-size: 17px; color: #444; margin-top: 8px; }
+    .caption, .maxcd_caption, figcaption { text-align: left; }
     .maxcd_note { font-size: 16px; color: var(--muted); margin-top: 12px; }
     .seg { display: inline-flex; gap: 4px; padding: 4px; border: 1px solid var(--line); border-radius: 8px; background: #fff; flex-wrap: wrap; }
     .seg button { font-size: 15px; min-height: 40px; padding: 6px 16px; color: var(--muted); border: 0; border-radius: 5px; background: transparent; cursor: pointer; white-space: nowrap; transition: background .15s, color .15s; }
@@ -272,7 +273,7 @@
       </p>
       <figure class="has-text-centered" style="margin-top: 16px;">
         <img src="materials/0-method/process.png" alt="Sampling procedures of CompDiffuser, CDGS and MaxCD, showing the spectral split, overlap mask and noise-level threshold" style="width: 100%;">
-        <p class="caption" style="font-size: 18px; margin-top: 10px; text-align: justify;">
+        <p class="caption" style="font-size: 18px; margin-top: 10px;">
           <b>Overview of <span class="maxcd_brand">MaxCD</span>, compared with CompDiffuser and CDGS.</b>
           <b>Top:</b> CompDiffuser applies the original transition at each denoising step.
           <b>Middle:</b> CDGS performs <i>U</i> resampling iterations before evaluating and repopulating candidate plans.
@@ -377,7 +378,7 @@
         <figure><video id="env-task4" playsinline autoplay muted loop><source type="video/mp4"></video><figcaption id="env-task4-caption">Task 4</figcaption></figure>
         <figure><video id="env-task5" playsinline autoplay muted loop><source type="video/mp4"></video><figcaption id="env-task5-caption">Task 5</figcaption></figure>
       </div>
-      <p class="maxcd_note has-text-centered" id="env_note"></p>
+      <p class="maxcd_note caption" id="env_note"></p>
     </div>
   </div>
 </section>
