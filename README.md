@@ -4,7 +4,7 @@ Project page for **Compositional Diffusion with Maximal-Noise Transitions for Lo
 
 Static site, no build step. Serve the directory with any static HTTP server that supports byte-range requests
 (needed for video seeking); GitHub Pages works as is. Environment and task selectors load the corresponding execution videos.
-Failed episodes are labelled where the recorded rollout set has no successful episode for that task
+Failed episodes are labeled where the recorded rollout set has no successful episode for that task
 (AntSoccer-Medium tasks 2 and 3, Cube-Quadruple task 4).
 
 Layout:

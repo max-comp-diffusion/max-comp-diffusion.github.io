@@ -64,6 +64,10 @@
     .pano_row img { width: 100%; border-radius: 4px; border: 1px solid #ddd; background: #000; display: block; }
     .pano_prompt { font-size: 17px; color: #444; margin: 6px 0 14px 0; font-style: italic; text-align: center; }
     .pano_video_pair video { width: 100%; border-radius: 4px; background: #000; }
+    .pano_playback { display: flex; align-items: center; gap: 12px; margin-top: 12px; flex-wrap: wrap; }
+    .pano_playback button { font-size: 15px; min-height: 40px; padding: 6px 14px; border: 1px solid var(--line); border-radius: 6px; background: #fff; color: var(--ink); cursor: pointer; }
+    .pano_playback input { flex: 1; min-width: 100px; accent-color: var(--accent); cursor: pointer; }
+    .pano_playback output { font-size: 14px; color: var(--muted); font-variant-numeric: tabular-nums; }
     .plan_denoising { margin: 24px 0 30px; }
     .plan_denoising video { display: block; width: 100%; aspect-ratio: 1440 / 580; background: #fff; border-radius: 6px; }
     @media (max-width: 600px) { .plan_denoising video { aspect-ratio: 720 / 1168; } }
@@ -138,9 +142,9 @@
     <div class="column is-full-width">
       <h2 class="title is-4">Mode-Averaging Problem in Compositional Diffusion</h2>
       <p class="has-text-justified maxcd_lead">
-        When local plan distributions are multimodal, neighbouring local plans may be denoised towards incompatible modes.
-        A local plan conditioned on these neighbours through its overlaps can then have a denoised estimate between the modes,
-        in a low-density region. The composed plan can therefore be infeasible even when each mode represents feasible local behaviour.
+        When local plan distributions are multimodal, neighboring local plans may be denoised toward incompatible modes.
+        A local plan conditioned on these neighbors through its overlaps can then have a denoised estimate between the modes,
+        in a low-density region. The composed plan can therefore be infeasible even when each mode represents feasible local behavior.
         In the circular-arc example, the local diffusion model is trained on short segments along the circle, and three
         overlapping local plans are composed to connect the start
         <img src="materials/0-method/mark_start_crop.png" alt="start" style="height: 1em; vertical-align: -0.18em;">
@@ -207,9 +211,9 @@
             Increasing the noise standard deviation &sigma;<sub><i>t</i></sub> reduces <i>c<sub>t</sub></i>.
             At the maximal admissible value,
             <img src="materials/0-method/eq_sigma.svg" alt="sigma_t = sqrt(1 - alpha_{t-1})" style="height: 1.6em; vertical-align: -0.45em;">,
-            the coefficient becomes zero. The denoised estimate still depends on the current plan and its neighbours.
-            In the local model analysed in Proposition 1, the denoised estimate stays at the midpoint between two incompatible modes
-            while an overlap coordinate is in the mode-averaged region. Maximal-noise transitions minimise the probability of remaining
+            the coefficient becomes zero. The denoised estimate still depends on the current plan and its neighbors.
+            In the local model analyzed in Proposition 1, the denoised estimate stays at the midpoint between two incompatible modes
+            while an overlap coordinate is in the mode-averaged region. Maximal-noise transitions minimize the probability of remaining
             in this region throughout a fixed sequence of denoising steps. Retaining the predicted noise direction increases this
             probability under the same model.
           </p>
@@ -238,8 +242,8 @@
         <p class="equation_hint">Scroll the equation horizontally to read all terms.</p>
         <p>
           Here <b>z</b> is standard Gaussian noise sampled independently at each transition.
-          Subsequent denoising conditioned on neighbouring local plans can move the overlap estimate away from a mode-averaged state
-          towards a supported mode.
+          Subsequent denoising conditioned on neighboring local plans can move the overlap estimate away from a mode-averaged state
+          toward a supported mode.
         </p>
       </div>
 
@@ -263,7 +267,7 @@
 
       <h3 class="title is-5" style="margin: 18px 0 8px 0;">Compositional update</h3>
       <p class="has-text-justified maxcd_lead">
-        Neighbouring local plans exchange information through their overlaps. We apply the candidate with the spectral split to the
+        Neighboring local plans exchange information through their overlaps. We apply the candidate with the spectral split to the
         <b>overlap coordinates of interior local plans</b> and retain the original transition elsewhere.
         The start- and goal-conditioned plans keep the original transition throughout.
         The update is used only while <i>t</i>/<i>T</i> &gt; &gamma;, reserving the low-noise stages for refinement with the original transition.
@@ -300,8 +304,7 @@
         <b class="maxcd_brand">MaxCD</b> with the same pretrained local model and start and goal conditions.
         CompDiffuser produces many infeasible plans that pass through walls, while MaxCD generates more valid plans that follow the
         corridors. In the paper's AntMaze comparison, MaxCD raises the mean valid plan rate from 36% to 86% across the five tasks.
-        The appendix provides the same comparison on PointMaze-Giant-Stitch; MaxCD uses the bandwidth &rho; = 0.1 in this
-        analysis, as stated in the paper.
+        The appendix provides the same comparison on PointMaze-Giant-Stitch.
       </p>
       <figure class="plan_denoising" id="plan_denoising_example">
         <video id="plan-denoising" playsinline autoplay muted loop controls preload="metadata"
@@ -353,7 +356,7 @@
         inverse dynamics model. Cube uses full-state plans executed by goal-conditioned Diffusion Q-Learning policies.
         Blue, pink and yellow markers indicate the start, goal and current planned subgoal. In Cube, translucent cubes show the
         goal configuration and dotted traces show the executed cube positions.
-        Failed episodes are labelled when the recorded rollout set contains no successful episode for that task.
+        Failed episodes are labeled when the recorded rollout set contains no successful episode for that task.
       </p>
 
       <div class="seg_grid_wrap">
@@ -429,9 +432,15 @@
       </div>
       <div class="pano_video_pair">
         <p class="pano_label" style="font-weight:600; font-size:16px; color:#333;">GSC <span class="sub">(original transition)</span></p>
-        <video id="denoise-gsc" playsinline autoplay muted loop><source id="denoise-gsc-src" src="assets/videos/landscape-gsc-denoising-fff26010fe.mp4" type="video/mp4"></video>
+        <video id="denoise-gsc" playsinline muted preload="auto" aria-label="GSC panorama denoising"><source id="denoise-gsc-src" src="assets/videos/landscape-gsc-denoising-fff26010fe.mp4" type="video/mp4"></video>
         <p class="pano_label" style="font-weight:600; font-size:16px; color:#333; margin-top: 10px;"><span class="maxcd_brand">MaxCD</span> <span class="sub">(with the spectral split)</span></p>
-        <video id="denoise-maxcd" playsinline autoplay muted loop><source id="denoise-maxcd-src" src="assets/videos/landscape-maxcd-denoising-a4f45ce251.mp4" type="video/mp4"></video>
+        <video id="denoise-maxcd" playsinline muted preload="auto" aria-label="MaxCD panorama denoising"><source id="denoise-maxcd-src" src="assets/videos/landscape-maxcd-denoising-a4f45ce251.mp4" type="video/mp4"></video>
+      </div>
+      <div class="pano_playback" role="group" aria-label="Panorama comparison playback">
+        <button id="denoise-play" type="button">Pause</button>
+        <button id="denoise-replay" type="button">Replay</button>
+        <input id="denoise-seek" type="range" min="0" max="1" step="0.001" value="0" disabled aria-label="Seek both panorama videos">
+        <output id="denoise-time" for="denoise-seek">0.0 / 0.0 s</output>
       </div>
     </div>
   </div>
@@ -570,22 +579,6 @@ document.querySelectorAll("#planq_seg button").forEach((b) => {
   });
 });
 
-const DENOISE_CLIPS = {
-  landscape: { gsc: "assets/videos/landscape-gsc-denoising-fff26010fe.mp4", maxcd: "assets/videos/landscape-maxcd-denoising-a4f45ce251.mp4" },
-  corgis: { gsc: "assets/videos/corgis-gsc-denoising-baf46cd55c.mp4", maxcd: "assets/videos/corgis-maxcd-denoising-fb22590d1b.mp4" },
-};
-document.querySelectorAll("#denoise_seg button").forEach((b) => {
-  b.addEventListener("click", () => {
-    document.querySelectorAll("#denoise_seg button").forEach((x) => x.classList.remove("active"));
-    b.classList.add("active");
-    ["gsc", "maxcd"].forEach((m) => {
-      const v = document.getElementById("denoise-" + m);
-      document.getElementById("denoise-" + m + "-src").src = DENOISE_CLIPS[b.dataset.key][m];
-      v.load(); v.play().catch(() => {});
-    });
-  });
-});
-
 const planDenoisingViewport = window.matchMedia("(max-width: 600px)");
 function loadPlanDenoising() {
   const video = document.getElementById("plan-denoising");
@@ -606,6 +599,7 @@ function loadPlanDenoising() {
 planDenoisingViewport.addEventListener("change", loadPlanDenoising);
 window.addEventListener("DOMContentLoaded", () => { renderVariantSeg(); loadVideos(); panoInit(); loadPlanDenoising(); });
 </script>
+<script src="static/js/panorama-sync.js?v=20260923"></script>
 
 </body>
 </html>
